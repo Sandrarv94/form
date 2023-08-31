@@ -9,6 +9,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <title>Crud php</title>
+    <?php
+        $nitocc = "";
+        $nombre = ""; 
+        $direccion = ""; 
+        $telefono = ""; 
+        $fechaIngreso = ""; 
+        $cupoCredito = "";
+        $foto = "";
+        if(isset($_POST['buscar'])){
+            $buscarNitCc = $_POST['buscarNitCc'];
+            $consulta = $conexion->query("SELECT * FROM tblCliente WHERE nitocc='$buscarNitCc'");
+            while($resultadoConsulta = $consulta->fetch_array()){
+                $nitocc=$resultadoConsulta[0];
+                $nombre=$resultadoConsulta[1];
+                $direccion=$resultadoConsulta[2];
+                $telefono=$resultadoConsulta[3];
+                $fechaIngreso=$resultadoConsulta[4];
+                $cupoCredito=$resultadoConsulta[5];
+                $foto=$resultadoConsulta[6];
+            }
+        }
+
+    ?>
 </head>
 <body>
     <center>
@@ -19,28 +42,28 @@
             <input type="submit" value="Buscar" name="buscar">
             <hr>
             <label for="">Nit o CC: </label>
-            <input type="text" name="nitocc" id="" placeholder="Ingrese el nit o cc del nuevo cliente">
+            <input type="text" name="nitocc" id="" value="<?php echo $nitocc ?>" placeholder="Ingrese el nit o cc del nuevo cliente">
             <br><br>
             <label for="">Nombres: </label>
-            <input type="text" name="nombre" id="" placeholder="Ingresa el nombre completo">
+            <input type="text" name="nombre" id="" value="<?php echo $nombre ?>" placeholder="Ingresa el nombre completo">
             <br><br>
             <label for="">Dirección: </label>
-            <input type="text" name="direccion" id="" placeholder="Ej: Cl 34#12-20">
+            <input type="text" name="direccion" id="" value="<?php echo $direccion ?>" placeholder="Ej: Cl 34#12-20">
             <br><br>
             <label for="">Telefono: </label>
-            <input type="number" name="telefono" id="" placeholder="Ej: 222-222-2222">
+            <input type="number" name="telefono" id="" value="<?php echo $telefono ?>" placeholder="Ej: 222-222-2222">
             <br><br>
             <label for="">Fecha de ingreso: </label>
-            <input type="date" name="fechaIngreso" id="">
+            <input type="date" name="fechaIngreso" id="" value="<?php echo $fechaIngreso ?>">
             <br><br>
             <label for="">Cupo del crédito: </label>
-            <input type="number" name="cupoCredito" id="" placeholder="Ingresar valor en pesos">
+            <input type="number" name="cupoCredito" id="" value="<?php echo $cupoCredito ?>" placeholder="Ingresar valor en pesos">
             <br><br>
             <label for="">Subir foto: </label>
             <input type="file" name="foto" id="">
             <br><br>
             <label for="">Foto: </label>
-            <img src="" alt="" width="80" height="80">
+            <img src="<?php echo $foto ?>" alt="" width="80" height="80">
             <br><br>
             <input type="submit" value="Guardar nuevo cliente" name="guardar">
             <input type="submit" value="Listar todos los clientes" name="listar">
