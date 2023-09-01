@@ -38,9 +38,12 @@
         <h2>Manipulación de datos con PHP</h2>
         <form action=""  method="post" enctype="multipart/form-data">
             <label for="">Buscar</label>
-            <input type="text" name="buscarNit/Cc" id="" placeholder="Buscar cliente">
+            <input type="text" name="buscarNitCc" id="" placeholder="Buscar cliente">
             <input type="submit" value="Buscar" name="buscar">
-            <hr>
+            <input type="submit" value="Listar todos los clientes" name="listar">
+        </form>
+        <hr>
+        <form action="consultas.php" method="post" enctype="multipart/form-data">
             <label for="">Nit o CC: </label>
             <input type="text" name="nitocc" id="" value="<?php echo $nitocc ?>" placeholder="Ingrese el nit o cc del nuevo cliente">
             <br><br>
@@ -66,40 +69,49 @@
             <img src="<?php echo $foto ?>" alt="" width="80" height="80">
             <br><br>
             <input type="submit" value="Guardar nuevo cliente" name="guardar">
-            <input type="submit" value="Listar todos los clientes" name="listar">
             <input type="submit" value="Actualizar cliente" name="actualizar">
             <input type="submit" value="Eliminar cliente" name="eliminar">
         </form>
     </center>
     <?php
-        if(isset($_POST['guardar'])){
-            //los datos de entrada almacenados en variables 
-            $nitocc = $_POST['nitocc'];
-            $nombre = $_POST['nombre']; 
-            $direccion = $_POST['direccion']; 
-            $telefono = $_POST['telefono']; 
-            $fechaIngreso = $_POST['fechaIngreso']; 
-            $cupoCredito = $_POST['cupoCredito'];
-            //manejo de archivos
-            $nombreFoto = $_FILES['foto']['name'];
-            $ruta = $_FILES['foto']['tmp_name']; //ruta del archivo
-            $foto = 'fotos/'.$nombreFoto; //ruta y nombre del archivo
-            copy($ruta, $foto); //guarda el archivo en una ruta específica
+        if(isset($_POST['listar'])){
+            echo "<center>
+                <table border='3'>
+                <tr>
+                    <th>Nit o CC</th>
+                    <th>Dirección</th>
+                    <th>Telefono</th>
+                    <th>Fecha de Ingreso</th>
+                    <th>Cupo de Crédito</th>
+                    <th>Foto del Cliente</th>
+                </tr>";
 
-            //verificar que no existan valores duplicados de nit o cedula
-            $sqlBuscar = "SELECT nitocc FROM tblCliente WHERE nitocc='$nitocc' ORDER BY nitocc";
-
-            if($resultado = mysqli_query($conexion, $sqlBuscar)){
-                $numRegistros = mysqli_num_rows($resultado);
-                if($numRegistros>0){
-                    echo "<script>alert('ese nit o cc ya existe');</script>";
-                } else {
-                    mysqli_query($conexion, "INSERT INTO tblCliente (nitocc, nombre, direccion, telefono, fechaIngreso, cupoCredito, foto)
-                    VALUES ('$nitocc', '$nombre', '$direccion', '$telefono', '$fechaIngreso', '$cupoCredito', '$foto')");
-
-                    echo 'Datos guardados correctamente';
+                $buscar=$conexion->query("SELECT * FROM tblCliente");
+                while($resultado = $buscar->fetch_array()){
+                    $nitocc=$resultado[0];
+                    $nombre=$resultado[1];
+                    $direccion=$resultado[2];
+                    $telefono=$resultado[3];
+                    date_default_timezone_set('America/Bogota');
+                    $fechaIngreso=date("d-m-Y", strtotime($resultado[4]));
+                    $cupoCredito = number_format($resultado[5]);
+                    $foto = $resultado[6];
                 }
-            }
+                
+            echo "<tr>
+                <td>$nitocc</td>
+                <td>$nombre</td>
+                <td>$direccion</td>
+                <td>$telefono</td>
+                <td>$fechaIngreso</td>
+                <td>$cupoCredito</td>
+                <td>
+                    <img src='$foto' width='30%' height='30%'>
+                </td>
+        
+            </tr> 
+             
+            </table></center>"; 
         }
     ?>
 </body>
